@@ -90,6 +90,14 @@ var SVGtoPDF = function(doc, svg, x, y, options) {
     }
     function docEndGroup(group) {
       if (group !== groupStack.pop()) {throw('Group not matching');}
+
+      group.resources.data.ColorSpace = {};
+      let i = 1;
+      for (let item in doc.spotColors) {
+        item = doc.spotColors[item];
+        group.resources.data.ColorSpace[`CS${i++}`] = `${item.id} 0 R`;
+      }
+
       if (Object.keys(doc.page.fonts).length) {group.resources.data.Font = doc.page.fonts;}
       if (Object.keys(doc.page.xobjects).length) {group.resources.data.XObject = doc.page.xobjects;}
       if (Object.keys(doc.page.ext_gstates).length) {group.resources.data.ExtGState = doc.page.ext_gstates;}
@@ -211,7 +219,9 @@ var SVGtoPDF = function(doc, svg, x, y, options) {
       doc.addContent('ET');
     }
     function docFillColor(color) {
-      if (color[0].type === 'PDFPattern') {
+      if (isString(color[0])) {
+        doc.fillColor(color[0]);
+      } else if (color[0].type === 'PDFPattern') {
         doc.fillOpacity(color[1]);
         docUsePattern(color[0], false);
       } else {
@@ -219,7 +229,9 @@ var SVGtoPDF = function(doc, svg, x, y, options) {
       }
     }
     function docStrokeColor(color) {
-      if (color[0].type === 'PDFPattern') {
+      if (isString(color[0])) {
+        doc.strokeColor(color[0]);
+      } else if (color[0].type === 'PDFPattern') {
         doc.strokeOpacity(color[1]);
         docUsePattern(color[0], true);
       } else {
@@ -497,10 +509,16 @@ var SVGtoPDF = function(doc, svg, x, y, options) {
         result = [[parseInt(temp[1], 16), parseInt(temp[2], 16), parseInt(temp[3], 16)], 1];
       } else if (temp = raw.match(/^#([0-9a-f])([0-9a-f])([0-9a-f])$/i)) {
         result = [[0x11 * parseInt(temp[1], 16), 0x11 * parseInt(temp[2], 16), 0x11 * parseInt(temp[3], 16)], 1];
+      } else {
+        result = [raw, 1];
       }
       return colorCallback ? colorCallback(result, raw) : result;
     }
     function opacityToColor(color, opacity, isMask) {
+      if (typeof color[0] === "string") {
+        return [color[0], color[1] * opacity];
+      }
+
       let newColor = color[0].slice(),
           newOpacity = color[1] * opacity;
       if (isMask) {
@@ -584,6 +602,9 @@ var SVGtoPDF = function(doc, svg, x, y, options) {
     }
     function isArrayLike(v) {
       return typeof v === 'object' && v !== null && typeof v.length === 'number';
+    }
+    function isString(s) {
+      return Object.prototype.toString.call(s) === "[object String]";
     }
     function parseTranform(v) {
       let parser = new StringParser((v || '').trim()), result = [1, 0, 0, 1, 0, 0], temp;
@@ -2704,8 +2725,10 @@ var SVGtoPDF = function(doc, svg, x, y, options) {
     } else {
       for (let color in DefaultColors) {
         let newColor = colorCallback(DefaultColors[color]);
-        DefaultColors[color][0] = newColor[0];
-        DefaultColors[color][1] = newColor[1];
+        if (newColor && isArrayLike(newColor)) {
+          DefaultColors[color][0] = newColor[0];
+          DefaultColors[color][1] = newColor[1];
+        }
       }
     }
     if (typeof documentCallback !== 'function') {
