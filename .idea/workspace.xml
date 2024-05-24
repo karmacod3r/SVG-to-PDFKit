@@ -4,8 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4b876d10-e283-4d2e-a8bd-99bbe23aca83" name="Changes" comment="added spot color support adapted from alvarcarto/SVG-to-PDFKit,&#10;included spot colors in docEndGroup">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="4b876d10-e283-4d2e-a8bd-99bbe23aca83" name="Changes" comment="fixed parseColor to respect pattern urls">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/source.js" beforeDir="false" afterPath="$PROJECT_DIR$/source.js" afterDir="false" />
     </list>
@@ -21,6 +20,9 @@
   &quot;associatedIndex&quot;: 7
 }</component>
   <component name="ProjectId" id="2g9CGHK75V1nZlY7l7pxetQMmHV" />
+  <component name="ProjectLevelVcsManager">
+    <OptionsSetting value="false" id="Update" />
+  </component>
   <component name="ProjectViewState">
     <option name="autoscrollFromSource" value="true" />
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -61,7 +63,7 @@
       <workItem from="1715100310196" duration="8294000" />
       <workItem from="1715182163619" duration="969000" />
       <workItem from="1715595498039" duration="586000" />
-      <workItem from="1716531208830" duration="421000" />
+      <workItem from="1716531208830" duration="988000" />
     </task>
     <task id="LOCAL-00001" summary="added spot color support adapted from alvarcarto/SVG-to-PDFKit,&#10;included spot colors in docEndGroup">
       <option name="closed" value="true" />
@@ -71,7 +73,15 @@
       <option name="project" value="LOCAL" />
       <updated>1715157682931</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="fixed parseColor to respect pattern urls">
+      <option name="closed" value="true" />
+      <created>1716531684608</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1716531684608</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -79,6 +89,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="added spot color support adapted from alvarcarto/SVG-to-PDFKit,&#10;included spot colors in docEndGroup" />
-    <option name="LAST_COMMIT_MESSAGE" value="added spot color support adapted from alvarcarto/SVG-to-PDFKit,&#10;included spot colors in docEndGroup" />
+    <MESSAGE value="fixed parseColor to respect pattern urls" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed parseColor to respect pattern urls" />
   </component>
 </project>
