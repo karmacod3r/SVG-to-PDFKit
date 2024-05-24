@@ -510,7 +510,9 @@ var SVGtoPDF = function(doc, svg, x, y, options) {
       } else if (temp = raw.match(/^#([0-9a-f])([0-9a-f])([0-9a-f])$/i)) {
         result = [[0x11 * parseInt(temp[1], 16), 0x11 * parseInt(temp[2], 16), 0x11 * parseInt(temp[3], 16)], 1];
       } else if (! raw.startsWith("url(")) {
-        result = [raw, 1];
+        // it's a spot color!
+        // escape white space and add id as result
+        result = [raw.replace(/ /g, "#20"), 1];
       }
       return colorCallback ? colorCallback(result, raw) : result;
     }
