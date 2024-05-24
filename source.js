@@ -509,7 +509,7 @@ var SVGtoPDF = function(doc, svg, x, y, options) {
         result = [[parseInt(temp[1], 16), parseInt(temp[2], 16), parseInt(temp[3], 16)], 1];
       } else if (temp = raw.match(/^#([0-9a-f])([0-9a-f])([0-9a-f])$/i)) {
         result = [[0x11 * parseInt(temp[1], 16), 0x11 * parseInt(temp[2], 16), 0x11 * parseInt(temp[3], 16)], 1];
-      } else {
+      } else if (! temp.startsWith("url(")) {
         result = [raw, 1];
       }
       return colorCallback ? colorCallback(result, raw) : result;
