@@ -122,7 +122,7 @@ var SVGtoPDF = function(doc, svg, x, y, options) {
         Subtype: 'Form',
         FormType: 1,
         BBox: bbox,
-        Group: {S: 'Transparency', CS: options?.cmyk ? 'DeviceCMYK' : 'DeviceRGB', I: true, K: false},
+        Group: {S: 'Transparency', CS: 'DeviceRGB', I: true, K: false},
         Resources: group.resources
       });
       group.xobj.write('');
@@ -164,7 +164,7 @@ var SVGtoPDF = function(doc, svg, x, y, options) {
       let name = 'M' + (doc._maskCount = (doc._maskCount || 0) + 1);
       let gstate = doc.ref({
         Type: 'ExtGState', CA: 1, ca: 1, BM: 'Normal',
-        SMask: {S: 'Luminosity', G: group.xobj, BC: (clip ? DefaultColors.black : DefaultColors.white)}
+        SMask: {S: 'Luminosity', G: group.xobj, BC: (clip ? [0, 0, 0] : [1, 1, 1])}
       });
       gstate.end();
       doc.page.ext_gstates[name] = gstate;
