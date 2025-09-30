@@ -8,6 +8,6 @@
   "bugs": "https://github.com/alafr/SVG-to-PDFKit/issues",
   "main": "source.js",
   "devDependencies": {
-    "pdfkit": ">=0.8.1"
+    "pdfkit": "^0.17.2"
   }
 }
