@@ -122,7 +122,7 @@ var SVGtoPDF = function(doc, svg, x, y, options) {
         Subtype: 'Form',
         FormType: 1,
         BBox: bbox,
-        Group: {S: 'Transparency', CS: 'DeviceRGB', I: true, K: false},
+        Group: {S: 'Transparency', CS: options?.cmyk ? 'DeviceCMYK' : 'DeviceRGB', I: true, K: false},
         Resources: group.resources
       });
       group.xobj.write('');
