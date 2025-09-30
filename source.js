@@ -1,6 +1,47 @@
 var SVGtoPDF = function(doc, svg, x, y, options) {
     "use strict";
 
+    function rgb2cmyk(color) {
+      let computedC = 0;
+      let computedM = 0;
+      let computedY = 0;
+      let computedK = 0;
+
+      //remove spaces from input RGB values, convert to int
+      let r = color[0];
+      let g = color[1];
+      let b = color[2];
+
+      if (r == null || g == null || b == null ||
+          isNaN(r) || isNaN(g) || isNaN(b)) {
+        alert('Please enter numeric RGB values!');
+        return;
+      }
+      if (r < 0 || g < 0 || b < 0 || r > 255 || g > 255 || b > 255) {
+        alert('RGB values must be in the range 0 to 255.');
+        return;
+      }
+
+      // BLACK
+      if (r === 0 && g === 0 && b === 0) {
+        computedK = 1;
+        return [0, 0, 0, 1];
+      }
+
+      computedC = 1 - (r / 255);
+      computedM = 1 - (g / 255);
+      computedY = 1 - (b / 255);
+
+      let minCMY = Math.min(computedC,
+          Math.min(computedM, computedY));
+      computedC = (computedC - minCMY) / (1 - minCMY);
+      computedM = (computedM - minCMY) / (1 - minCMY);
+      computedY = (computedY - minCMY) / (1 - minCMY);
+      computedK = minCMY;
+
+      return [computedC, computedM, computedY, computedK];
+    }
+
     const NamedColors = {aliceblue: [240,248,255], antiquewhite: [250,235,215], aqua: [0,255,255], aquamarine: [127,255,212], azure: [240,255,255], beige: [245,245,220], bisque: [255,228,196], black: [0,0,0], blanchedalmond: [255,235,205], blue: [0,0,255], blueviolet: [138,43,226], brown: [165,42,42], burlywood: [222,184,135], cadetblue: [95,158,160], chartreuse: [127,255,0],
       chocolate: [210,105,30], coral: [255,127,80], cornflowerblue: [100,149,237], cornsilk: [255,248,220], crimson: [220,20,60], cyan: [0,255,255], darkblue: [0,0,139], darkcyan: [0,139,139], darkgoldenrod: [184,134,11], darkgray: [169,169,169], darkgrey: [169,169,169], darkgreen: [0,100,0], darkkhaki: [189,183,107], darkmagenta: [139,0,139], darkolivegreen: [85,107,47],
       darkorange: [255,140,0], darkorchid: [153,50,204], darkred: [139,0,0], darksalmon: [233,150,122], darkseagreen: [143,188,143], darkslateblue: [72,61,139], darkslategray: [47,79,79], darkslategrey: [47,79,79], darkturquoise: [0,206,209], darkviolet: [148,0,211], deeppink: [255,20,147], deepskyblue: [0,191,255], dimgray: [105,105,105], dimgrey: [105,105,105],
@@ -11,9 +52,14 @@ var SVGtoPDF = function(doc, svg, x, y, options) {
       navajowhite: [255,222,173], navy: [0,0,128], oldlace: [253,245,230], olive: [128,128,0], olivedrab: [107,142,35], orange: [255,165,0], orangered: [255,69,0], orchid: [218,112,214], palegoldenrod: [238,232,170], palegreen: [152,251,152], paleturquoise: [175,238,238], palevioletred: [219,112,147], papayawhip: [255,239,213], peachpuff: [255,218,185], peru: [205,133,63],
       pink: [255,192,203], plum: [221,160,221], powderblue: [176,224,230], purple: [128,0,128], rebeccapurple: [102,51,153], red: [255,0,0], rosybrown: [188,143,143], royalblue: [65,105,225], saddlebrown: [139,69,19], salmon: [250,128,114], sandybrown: [244,164,96], seagreen: [46,139,87], seashell: [255,245,238], sienna: [160,82,45], silver: [192,192,192], skyblue: [135,206,235],
       slateblue: [106,90,205], slategray: [112,128,144], slategrey: [112,128,144], snow: [255,250,250], springgreen: [0,255,127], steelblue: [70,130,180], tan: [210,180,140], teal: [0,128,128], thistle: [216,191,216], tomato: [255,99,71], turquoise: [64,224,208], violet: [238,130,238], wheat: [245,222,179], white: [255,255,255], whitesmoke: [245,245,245], yellow: [255,255,0]};
-    const DefaultColors = options?.cmyk ?
-        {black: [0, 0, 0, 1, 1], white: [0, 0, 0, 1], transparent: [0, 0, 0, 1, 0]}
-        : {black: [NamedColors.black, 1], white: [NamedColors.white, 1], transparent: [NamedColors.black, 0]};
+
+    if (options?.cmyk) {
+        for (let key in NamedColors) {
+          NamedColors[key] = rgb2cmyk(NamedColors[key]);
+        }
+    }
+
+    const DefaultColors = {black: [NamedColors.black, 1], white: [NamedColors.white, 1], transparent: [NamedColors.black, 0]};
 
     const Entities = {quot: 34, amp: 38, lt: 60, gt: 62, apos: 39, OElig: 338, oelig: 339, Scaron: 352, scaron: 353, Yuml: 376, circ: 710, tilde: 732, ensp: 8194, emsp: 8195, thinsp: 8201, zwnj: 8204, zwj: 8205, lrm: 8206, rlm: 8207, ndash: 8211, mdash: 8212, lsquo: 8216, rsquo: 8217, sbquo: 8218, ldquo: 8220, rdquo: 8221, bdquo: 8222, dagger: 8224, Dagger: 8225, permil: 8240, lsaquo: 8249,
       rsaquo: 8250, euro: 8364, nbsp: 160, iexcl: 161, cent: 162, pound: 163, curren: 164, yen: 165, brvbar: 166, sect: 167, uml: 168, copy: 169, ordf: 170, laquo: 171, not: 172, shy: 173, reg: 174, macr: 175, deg: 176, plusmn: 177, sup2: 178, sup3: 179, acute: 180, micro: 181, para: 182, middot: 183, cedil: 184, sup1: 185, ordm: 186, raquo: 187, frac14: 188, frac12: 189, frac34: 190,
