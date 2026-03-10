@@ -57,6 +57,9 @@ declare namespace SVGtoPDF {
 
         // precision factor for approximate calculations (default = 3)
         precision?: number
+
+        // whether to convert predefined colors like named colors to CMYK, default is false (RGB)
+        cmyk?: boolean
     }
 }
 export = SVGtoPDF
